@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Schedule & Study Assistant</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; line-height: 1.6; }
+        .box { border: 1px solid #ccc; padding: 15px; border-radius: 8px; margin-bottom: 20px; background-color: #f9f9f9; }
+        h3 { margin-top: 0; color: #333; }
+        .tips { background-color: #eef7ff; border-left: 4px solid #0076ff; padding: 10px; margin-top: 15px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <h2>Personal Schedule & Study Tool</h2>
+
+    <div class="box">
+        <label><b>Select Day:</b></label><br>
+        <select id="daySelect">
+            <option value="Monday">Monday (Gym Day)</option>
+            <option value="Tuesday">Tuesday (Nursing Home Day)</option>
+            <option value="Wednesday">Wednesday (Gym Day)</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday (Gym Day)</option>
+            <option value="Saturday">Saturday (Gym Day)</option>
+            <option value="Sunday">Sunday (Badminton Day)</option>
+        </select>
+        
+        <br><br>
+        <label><b>Select Today's Focus:</b></label><br>
+        <select id="focusSelect">
+            <option value="AMC12">AMC12 Math</option>
+            <option value="Organic Chem">Organic Chemistry</option>
+            <option value="APUSH">APUSH</option>
+            <option value="SAT Prep">SAT Prep</option>
+            <option value="Passion Project">Passion Project</option>
+            <option value="Free Reign">Free Reign / Catch Up</option>
+        </select>
+
+        <br><br>
+        <label><b>Extra Interruption (e.g., Dentist at 11:00 AM):</b></label><br>
+        <input type="text" id="extraEvent" style="width: 90%;" placeholder="Type event and time here...">
+        
+        <br><br>
+        <button onclick="generateSchedule()" style="padding: 8px 16px; cursor: pointer;">Generate My Day</button>
+    </div>
+
+    <div id="scheduleContainer" class="box" style="display:none;">
+        <h3>Your Timeline</h3>
+        <ul id="scheduleOutput"></ul>
+        <div id="tipsOutput" class="tips"></div>
+    </div>
+
+    <script>
+        const studyTips = {
+            "AMC12": "AMC12 Tip: Keep a 'Mistake Journal'. Write down the exact math trick you missed, and retry that exact problem 3 days later.",
+            "Organic Chem": "Organic Chem Tip: Don't just read. Draw out the reaction mechanisms on a whiteboard completely from memory.",
+            "APUSH": "APUSH Tip: Practice rapid-firing thesis statements for DBQs. Connect historical events chronologically.",
+            "SAT Prep": "SAT Prep Tip: Focus heavily on section timing. Analyze your incorrect answers to find pattern gaps.",
+            "Passion Project": "Passion Project Tip: Break your main goal down into tiny 45-minute milestones. Build, don't just research.",
+            "Free Reign": "Free Reign Tip: Use today to patch up any subjects you fell behind on earlier this week, or double down on your Science Fair project."
+        };
+
+        function generateSchedule() {
+            const day = document.getElementById("daySelect").value;
+            const focus = document.getElementById("focusSelect").value;
+            const extra = document.getElementById("extraEvent").value;
+            
+            const output = document.getElementById("scheduleOutput");
+            const tipsDiv = document.getElementById("tipsOutput");
+            
+            output.innerHTML = ""; 
+            
+            // Core fixed morning items
+            let timeline = [
+                "8:00 AM - Breakfast",
+                "9:00 AM - Start Working: " + focus + " + Science Fair / Cold Emails"
+            ];
+            
+            // Add custom disruption if present
+            if (extra) {
+                timeline.push("⚠️ ATTENTION: " + extra);
+            }
+            
+            // Standard Lunch
+            timeline.push("12:30 PM - 1:00 PM - Lunch Break 🥗");
+            timeline.push("1:00 PM - Resume: " + focus + " / Project Tasks");
+
+            // Hardcoded afternoon variations based on the day
+            if (day === "Tuesday") {
+                timeline.push("1:30 PM - 2:30 PM - Performance at Nursing Home 🎹");
+                timeline.push("2:30 PM - 6:30 PM - Study Block Continued");
+            }
+            
+            if (["Monday", "Wednesday", "Friday", "Saturday"].includes(day)) {
+                timeline.push("3:00 PM - 5:00 PM - Gym Session 🏋️");
+                timeline.push("5:00 PM - 6:30 PM - Final Review / Wrap Up");
+            }
+            
+            if (day === "Sunday") {
+                timeline.push("2:00 PM - 4:00 PM - Badminton 🏸");
+                timeline.push("4:00 PM - 6:30 PM - Evening Wrap Up");
+            }
+
+            // Fixed evening items
+            timeline.push("6:30 PM - Dinner");
+            timeline.push("7:00 PM - 8:30 PM - Evening Walk");
+            timeline.push("8:30 PM - 9:00 PM - Shower");
+            timeline.push("9:00 PM - 9:40 PM - Chill / Scroll time");
+            timeline.push("9:40 PM - Sleep 😴");
+
+            // Render to page
+            timeline.forEach(item => {
+                let li = document.createElement("li");
+                li.innerHTML = item;
+                output.appendChild(li);
+            });
+
+            // Update Tips
+            tipsDiv.innerText = studyTips[focus];
+            
+            // Show container
+            document.getElementById("scheduleContainer").style.display = "block";
+        }
+    </script>
+</body>
+</html>
